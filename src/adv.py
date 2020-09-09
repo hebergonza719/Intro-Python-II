@@ -39,7 +39,14 @@ room['treasure'].s_to = room['narrow']
 #
 
 # Make a new player object that is currently in the 'outside' room.
-new_player = Player("Heber")
+user_name = input("What is your hero's name?")
+
+print(f"\n{user_name}, I hope you are ready for Hero's Quest.")
+print("May your life be long, and your death be swift.")
+
+print("\nPress 'q' to quit game.")
+
+new_player = Player(user_name, room['outside'])
 # Write a loop that:
 #
 # * Prints the current room name
@@ -50,3 +57,30 @@ new_player = Player("Heber")
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+i = True
+while i:
+    print(f"\nYou are in {new_player.current_room.name}, {new_player.current_room.description}")
+    movement = input("\nWhere would you like to move? N / E / W / S: ")
+    if movement == "q":
+        print(f"\n{new_player.name}, thank you for playing. Goodbye!")
+        break
+    elif movement == "n":
+        if new_player.current_room.n_to is not None:
+            new_player.current_room = new_player.current_room.n_to
+        else:
+            print("\nI'm sorry! That move is not possible.")
+    elif movement == "e":
+        if new_player.current_room.e_to is not None:
+            new_player.current_room = new_player.current_room.e_to
+        else:
+            print("\nI'm sorry! That move is not possible.")
+    elif movement == "w":
+        if new_player.current_room.w_to is not None:
+            new_player.current_room = new_player.current_room.w_to
+        else:
+            print("\nI'm sorry! That move is not possible.")
+    elif movement == "s":
+        if new_player.current_room.s_to is not None:
+            new_player.current_room = new_player.current_room.s_to
+        else:
+            print("\nI'm sorry! That move is not possible.")
