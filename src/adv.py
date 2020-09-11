@@ -38,20 +38,22 @@ room['treasure'].s_to = room['narrow']
 
 game_items = {
     'dagger': Item("dagger", "a short knife with a pointed and edged blade, used as a weapon"),
-    'candle': Item("candle", "a light source made of wax")
+    'candle': Item("candle", "a light source made of wax"),
+    'shield': Item("shield", "old wooden shield, not much protection")
 }
 
 # Adding items to rooms
 
 room['outside'].items.append(game_items['dagger'])
 room['outside'].items.append(game_items['candle'])
+room['foyer'].items.append(game_items['shield'])
 
 #
 # Main
 #
 
 # Make a new player object that is currently in the 'outside' room.
-user_name = input("What is your hero's name?")
+user_name = input("What is your hero's name? ")
 
 print(f"\n{user_name}, I hope you are ready for Hero's Quest.")
 print("\nMay your life be long, and your death be swift.")
@@ -64,7 +66,11 @@ print("\nType in 'n' to move north.\nType in 'e' to move east.\nType in 's' to m
 
 print("\nType in 'i' or 'inventory' to view your inventory.")
 
-print("\nYou can also take an item or drop an item.")
+print("\nType in 'd' or 'description' and name of an item to view its description.")
+
+print("\nType in 'take' or 'get' and name of an item to place it in your inventory.")
+
+print("\nType in 'drop' and name of an item to place it in the current room.")
 
 new_player = Player(user_name, room['outside'])
 # Write a loop that:
@@ -87,7 +93,8 @@ while i:
         for i in new_player.current_room.items:
             print(f"\t- {i.name}")
 
-    action = input("\nWhat would you like to do?")
+    user_input = input("\nWhat would you like to do? ")
+    action = user_input.lower()
     action_split = action.split()
     if len(action_split) == 1:
         if action == "q":
@@ -139,3 +146,8 @@ while i:
                         new_player.inventory.remove(i)
             else:
                 print(f"\n{action_split[1]} isn't currently in your inventory.")
+        elif action_split[0] == "description" or action_split[0] == "d":
+            if any(x == action_split[1] for x in game_items):
+                print(f"\n{game_items[action_split[1]].name} is {game_items[action_split[1]].description}")
+            else:
+                print(f"\n{action_split[1]} is not an in-game item.")
