@@ -37,10 +37,14 @@ room['treasure'].s_to = room['narrow']
 # List of in-game items
 
 game_items = {
-    'dagger': Item("Dagger", "a short knife with a pointed and edged blade, used as a weapon")
+    'dagger': Item("dagger", "a short knife with a pointed and edged blade, used as a weapon"),
+    'candle': Item("candle", "a light source made of wax")
 }
 
+# Adding items to rooms
+
 room['outside'].items.append(game_items['dagger'])
+room['outside'].items.append(game_items['candle'])
 
 #
 # Main
@@ -54,9 +58,11 @@ print("\nMay your life be long, and your death be swift.")
 
 print("\n-------------------------------------------------------------------------------------")
 
-print("\nPress 'q' to quit game.")
+print("\nType in 'q' to quit game.")
 
-print("\nPress 'n' to move north.\nPress 'e' to move east.\nPress 's' to move south.\nPress 'w' to move west.")
+print("\nType in 'n' to move north.\nType in 'e' to move east.\nType in 's' to move south.\nType in 'w' to move west.")
+
+print("\nType in 'i' or 'inventory' to view your inventory.")
 
 print("\nYou can also take an item or drop an item.")
 
@@ -77,9 +83,9 @@ while i:
     print(f"\nYou are in {new_player.current_room.name}, {new_player.current_room.description}")
 
     if len(new_player.current_room.items) > 0:
+        print(f"\nThese are the items in this room:")
         for i in new_player.current_room.items:
-            print(f"\nThese are the items in this room:")
-            print(f"\t {i.name}")
+            print(f"\t- {i.name}")
 
     action = input("\nWhat would you like to do?")
     action_split = action.split()
@@ -107,6 +113,29 @@ while i:
                 new_player.current_room = new_player.current_room.s_to
             else:
                 print("\nI'm sorry! That move is not possible.")
+        elif action == "i" or action == "inventory":
+            if len(new_player.inventory) > 0:
+                print(f"\nThese are the items in your inventory:")
+                for i in new_player.inventory:
+                    print(f"\t- {i.name}")
+            else:
+                print(f"\nYou currently don't have items in your inventory")
     elif len(action_split) == 2:
         if action_split[0] == "get" or action_split[0] == "take":
-            print(action.split())
+            if any(x.name == action_split[1] for x in new_player.current_room.items):
+                for i in new_player.current_room.items:
+                    if i.name == action_split[1]:
+                        i.on_take()
+                        new_player.inventory.append(i)
+                        new_player.current_room.items.remove(i)
+            else:
+                print(f"\n{action_split[1]} isn't currently located in this room.")
+        elif action_split[0] == "drop":
+            if any(x.name == action_split[1] for x in new_player.inventory):
+                for i in new_player.inventory:
+                    if i.name == action_split[1]:
+                        i.on_drop()
+                        new_player.current_room.items.append(i)
+                        new_player.inventory.remove(i)
+            else:
+                print(f"\n{action_split[1]} isn't currently in your inventory.")
